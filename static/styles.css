@@ -1,0 +1,472 @@
+:root {
+    --bg-primary: #121013;
+    --bg-card: #1C171C;
+    --bg-card-hover: #261F26;
+    --wine-primary: #722F37;
+    --wine-dark: #4A121A;
+    --wine-light: #8B263E;
+    --wine-border: #581825;
+    --gold-accent: #F59E0B;
+    --gold-light: #FCD34D;
+    --text-main: #F3F4F6;
+    --text-muted: #9CA3AF;
+    --border-color: #332633;
+    --success-green: #10B981;
+    --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Header Navbar */
+.navbar {
+    background-color: var(--wine-dark);
+    border-bottom: 2px solid var(--wine-primary);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.brand-logo {
+    background: linear-gradient(135deg, var(--wine-light), var(--gold-accent));
+    color: white;
+    padding: 0.4rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.brand-sub {
+    color: var(--gold-light);
+    font-weight: 400;
+    font-size: 0.95rem;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(0,0,0,0.3);
+    padding: 0.25rem;
+    border-radius: 10px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    background-color: var(--wine-primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(114, 47, 55, 0.4);
+}
+
+.status-badge {
+    font-size: 0.85rem;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success-green);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--success-green);
+    border-radius: 50%;
+
+}
+
+/* Main Layout Container */
+.container {
+    max-width: 1280px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.page-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Stepper Workflow Visualizer */
+.pipeline-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-card);
+    border: 1px solid var(--wine-border);
+    padding: 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    gap: 0.5rem;
+    overflow-x: auto;
+}
+
+.step-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    min-width: 110px;
+}
+
+.step-card.active {
+    background: rgba(114, 47, 55, 0.3);
+    border-color: var(--gold-accent);
+}
+
+.step-card.completed {
+    border-color: var(--wine-primary);
+}
+
+.step-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--wine-border);
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+}
+
+.step-card.active .step-icon {
+    background: var(--gold-accent);
+    color: black;
+}
+
+.step-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--text-main);
+}
+
+.step-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.step-arrow {
+    color: var(--gold-accent);
+    font-weight: 700;
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+/* Cards & Panels */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gold-light);
+}
+
+.gold-title {
+    color: var(--gold-accent);
+}
+
+/* Document Selection Grid */
+.doc-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.doc-checkbox-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.doc-checkbox-item:hover {
+    border-color: var(--wine-primary);
+    background: var(--bg-card-hover);
+}
+
+.doc-checkbox-item input[type="checkbox"] {
+    accent-color: var(--gold-accent);
+    width: 18px;
+    height: 18px;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--wine-primary), var(--wine-dark));
+    color: white;
+    border: 1px solid var(--wine-light);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--wine-light), var(--wine-primary));
+    box-shadow: 0 4px 12px rgba(139, 38, 62, 0.4);
+}
+
+/* Data Table */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.data-table th, .data-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background: rgba(114, 47, 55, 0.2);
+    color: var(--gold-light);
+    font-weight: 600;
+}
+
+.data-table tr:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+/* Chat Layout */
+.chat-layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .chat-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-group {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.input-group input {
+    flex: 1;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--wine-border);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--gold-accent);
+}
+
+.sample-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.sample-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.3rem 0.7rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chip:hover {
+    border-color: var(--gold-accent);
+    color: var(--gold-light);
+}
+
+.answer-card {
+    border-color: var(--gold-accent);
+}
+
+.answer-body {
+    font-size: 1.05rem;
+    color: #FFFFFF;
+    background: rgba(0,0,0,0.3);
+    padding: 1.25rem;
+    border-radius: 8px;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+.retrieval-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.retrieval-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+}
+
+.doc-name {
+    font-weight: 600;
+    color: var(--gold-light);
+}
+
+.score-tag {
+    background: var(--wine-primary);
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+}
+
+.retrieval-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.code-preview {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    background: rgba(0,0,0,0.5);
+    padding: 1rem;
+    border-radius: 8px;
+    color: #D1D5DB;
+    max-height: 250px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.log-item {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px dotted var(--border-color);
+
+}
+
+.log-step-name {
+    color: var(--gold-accent);
+    font-weight: 600;
+}

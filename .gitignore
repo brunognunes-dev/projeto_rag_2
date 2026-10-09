@@ -1,0 +1,28 @@
+# Credenciais e Variáveis de Ambiente
+.env
+.env.local
+.env.*.local
+
+# Ambientes Virtuais Python
+.venv/
+venv/
+env/
+ENV/
+
+# Caches do Python e Bytecodes
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Cache do FastEmbed / HuggingFace
+.fastembed_cache/
+fastembed_cache/
+
+# Arquivos de IDE e Sistema
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

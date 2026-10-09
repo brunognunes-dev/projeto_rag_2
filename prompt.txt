@@ -1,0 +1,556 @@
+INSTRUÇÃO CENTRAL
+Aja como um especialista em desenvolvimento web, engenharia de dados, RAG (Retrieval-Augmented Generation), Python e integração com bancos vetoriais, seguindo boas práticas de desenvolvimento de software.
+
+O objetivo é desenvolver um projeto didático e funcional, no qual o aluno consiga compreender claramente cada etapa do processo de RAG, desde a ingestão dos documentos até a geração da resposta pelo LLM.
+
+1. CONTEXTO DO PROJETO
+Será desenvolvido um projeto RAG.
+
+As informações referentes ao ambiente, versões, tecnologias e stacks obrigatórias estão descritas no arquivo:
+
+<dados>
+ambiente_stacks.txt
+</dados>
+Antes de iniciar qualquer implementação:
+
+Leia e compreenda o arquivo ambiente_stacks.txt.
+Respeite as tecnologias e versões especificadas nele.
+Não substitua uma tecnologia definida no arquivo sem necessidade.
+Caso exista conflito entre este prompt e ambiente_stacks.txt, analise o conflito e priorize as restrições explicitamente definidas no arquivo de ambiente.
+O projeto possui finalidade didática, portanto o código deve ser claro, organizado e suficientemente comentado para que o aluno consiga compreender o fluxo executado.
+Evite abstrações desnecessárias que escondam as etapas importantes do processo RAG.
+2. ARQUITETURA E RESPONSABILIDADES
+Utilize uma arquitetura clara separando:
+
+Frontend
+Interface do usuário.
+Visualização das etapas do processo RAG.
+Entrada da pergunta.
+Seleção da base/documentos para ingestão.
+Exibição dos resultados da recuperação.
+Exibição da resposta final.
+Backend
+Regras de negócio.
+Ingestão dos documentos.
+OCR.
+Extração e estruturação dos dados.
+Tokenização.
+Geração de embeddings.
+Comunicação com o Supabase.
+Recuperação vetorial.
+Construção do prompt aumentado.
+Comunicação com o LLM através do OpenRouter.
+Retorno estruturado das etapas do processo para o frontend.
+O frontend não deve conter regras de negócio ou lógica de acesso direto ao Supabase/OpenRouter.
+
+3. SEGURANÇA E CONFIGURAÇÕES
+As conexões remotas, incluindo:
+
+Supabase;
+OpenRouter;
+estão definidas no arquivo:
+
+.env
+Regras obrigatórias:
+
+Nunca expor as credenciais no frontend.
+Nunca inserir chaves diretamente no código-fonte.
+Nunca versionar ou imprimir credenciais nos logs.
+O backend deve ser o responsável pelas conexões com serviços externos.
+Utilize variáveis de ambiente para todas as credenciais e configurações sensíveis.
+Regra específica para testes de conectividade
+Ao criar scripts ou rotinas de teste de conectividade:
+
+Não leia ou exiba o valor das credenciais.
+Não faça print() das chaves.
+Não registre tokens, senhas ou URLs contendo credenciais.
+Apenas utilize a chave/entrada necessária para realizar a chamada de conexão.
+O resultado esperado do teste deve informar somente se a conexão foi bem-sucedida ou não, juntamente com uma mensagem de erro segura quando necessário.
+4. ORDEM OBRIGATÓRIA DE EXECUÇÃO
+Siga a seguinte ordem:
+
+Etapa 1 — Análise do ambiente
+Leia ambiente_stacks.txt.
+Identifique:
+stack frontend;
+stack backend;
+versão do Python;
+bibliotecas disponíveis;
+banco de dados;
+configurações;
+restrições;
+comandos de execução.
+Verifique a estrutura existente do projeto antes de criar novos arquivos.
+Etapa 2 — Teste do Supabase
+Antes de criar o backend funcional, faça um teste de conectividade com o Supabase.
+
+O teste deverá:
+
+utilizar as configurações do .env;
+verificar se o Supabase está acessível;
+verificar se as credenciais são válidas;
+verificar se existe comunicação com o banco;
+não expor nenhuma credencial.
+Regra:
+Somente prossiga para a implementação do backend após um teste de conectividade bem-sucedido.
+
+Caso o teste falhe:
+
+não continue silenciosamente;
+informe o erro;
+identifique a provável causa;
+corrija o problema quando estiver dentro do escopo;
+execute novamente o teste.
+5. BACKEND
+Após validar a conectividade com o Supabase, implemente o backend.
+
+O backend deverá ser responsável por todo o fluxo de RAG.
+
+Organize o código de forma modular, separando, quando apropriado:
+
+configuração;
+conexão com banco;
+ingestão;
+OCR;
+processamento de documentos;
+tokenização;
+embeddings;
+armazenamento vetorial;
+recuperação;
+construção do prompt;
+integração com LLM;
+APIs;
+modelos/estruturas de dados;
+tratamento de erros.
+Evite concentrar todo o projeto em um único arquivo.
+
+6. PROCESSO DE INGESTÃO
+A aplicação deverá possuir uma página específica para demonstrar visualmente o processo de ingestão.
+
+O fluxo deverá ser apresentado nesta ordem:
+
+INGESTÃO
+   ↓
+TOKENIZAÇÃO
+   ↓
+EMBEDDING
+   ↓
+ÍNDICE VETORIAL
+A interface deverá mostrar visualmente o andamento de cada etapa.
+
+Sempre que possível, o frontend deverá receber do backend informações estruturadas sobre o estado da operação, permitindo demonstrar ao aluno o que está acontecendo.
+
+7. DOCUMENTOS DE EXEMPLO
+Crie 4 documentos fictícios em formato PDF para utilização no projeto.
+
+Os documentos deverão representar:
+
+4 notas fiscais fictícias
+Os documentos devem possuir informações suficientes para permitir consultas posteriores, por exemplo:
+
+número da nota;
+data;
+emitente;
+destinatário;
+CNPJ;
+produtos;
+quantidade;
+valores;
+impostos;
+valor total;
+outros campos relevantes.
+Os dados devem ser totalmente fictícios.
+
+Os PDFs deverão fazer parte do ambiente de desenvolvimento para permitir testar todo o pipeline de ingestão.
+
+8. OCR E EXTRAÇÃO DE DADOS
+Utilize bibliotecas Python adequadas e eficazes para realizar OCR nos documentos.
+
+O processo deverá:
+
+Ler o PDF.
+Identificar o conteúdo textual.
+Aplicar OCR quando necessário.
+Extrair os campos relevantes.
+Estruturar os dados.
+Preparar os dados para o processo de RAG.
+Sempre que possível, preserve a relação entre:
+
+Documento original
+        ↓
+Texto extraído
+        ↓
+Dados estruturados
+        ↓
+Chunks
+        ↓
+Embeddings
+        ↓
+Vetores
+O projeto deve deixar essa relação clara para fins didáticos.
+
+9. ESTRUTURAÇÃO TABULAR LOCAL
+Após o OCR e a extração dos campos, estruture localmente os dados em formato tabular.
+
+A estrutura deverá permitir visualizar claramente os dados extraídos das notas fiscais.
+
+Exemplo conceitual:
+
+documento
+nota_fiscal
+data
+emitente
+destinatario
+produto
+quantidade
+valor_unitario
+valor_total
+texto_extraido
+A estrutura final deve ser adaptada aos campos efetivamente encontrados nos documentos.
+
+10. BANCO VETORIAL
+O Supabase será utilizado como banco remoto.
+
+Utilize PostgreSQL + PGVECTOR para armazenamento e recuperação dos embeddings.
+
+O processo deverá:
+
+Criar a estrutura/tabela necessária no Supabase.
+Habilitar/utilizar o pgvector.
+Definir a coluna vetorial com a dimensionalidade compatível com o modelo de embedding escolhido.
+Armazenar:
+identificação do documento;
+metadados;
+conteúdo/chunk;
+dados estruturados relevantes;
+embedding.
+Criar a estrutura necessária para recuperação por similaridade.
+Inserir os vetores gerados durante a ingestão.
+Utilizar essa estrutura no processo de retrieval.
+Não assuma a dimensionalidade do embedding: ela deve ser compatível com o modelo efetivamente utilizado.
+
+11. EMBEDDINGS
+Utilize FastEmbed para geração dos embeddings.
+
+O modelo deverá ser adequado para o idioma e para o objetivo do projeto.
+
+Antes de criar a estrutura vetorial definitiva:
+
+identifique o modelo utilizado;
+confirme a dimensão do vetor produzido;
+utilize essa dimensão na coluna vector do PGVECTOR;
+mantenha essa configuração centralizada para evitar inconsistências.
+O processo deve permitir que o aluno compreenda:
+
+Texto
+  ↓
+FastEmbed
+  ↓
+Vetor
+  ↓
+PGVECTOR
+12. PÁGINA DE CONSULTA
+Crie uma página específica para consultas.
+
+A experiência deverá ser semelhante a uma interface de chat moderna, inspirada conceitualmente em aplicações como ChatGPT, porém com identidade visual própria.
+
+A página deverá possuir:
+
+campo para digitar a pergunta;
+botão para enviar a pergunta;
+histórico visual da conversa, quando aplicável;
+indicação de processamento;
+resposta final;
+visualização do processo RAG;
+visualização dos documentos recuperados.
+13. FLUXO DA CONSULTA
+A página de consulta deverá representar visualmente o seguinte fluxo:
+
+PERGUNTA
+   ↓
+TOKENIZAÇÃO
+   ↓
+EMBEDDING
+   ↓
+RETRIEVAL
+   ↓
+PROMPT AUMENTADO
+   ↓
+LLM
+Cada etapa deverá ser identificável na interface.
+
+O objetivo não é apenas retornar a resposta final, mas demonstrar didaticamente como a resposta foi construída.
+
+14. RETRIEVAL
+O processo de retrieval deverá utilizar busca vetorial no PGVECTOR.
+
+Para cada pergunta:
+
+gerar o embedding da pergunta;
+consultar a base vetorial;
+utilizar similaridade vetorial;
+retornar top_k = 5;
+apresentar os 5 candidatos recuperados, quando existirem;
+apresentar seus respectivos scores de similaridade;
+mostrar informações suficientes para identificar a origem do conteúdo recuperado.
+Na interface, apresente algo semelhante a:
+
+Resultado 1
+Score: 0.XX
+Documento: NF_001.pdf
+Conteúdo: ...
+
+Resultado 2
+Score: 0.XX
+Documento: NF_003.pdf
+Conteúdo: ...
+Os valores devem ser reais, provenientes da busca executada.
+
+Não invente resultados.
+
+15. AUSÊNCIA DE CANDIDATOS
+Caso o retrieval não encontre candidatos relevantes ou não existam dados disponíveis na base:
+
+Não crie, invente ou complete informações.
+
+A resposta deverá ser exatamente:
+
+Sem dados disponíveis na base
+Essa regra deve ser aplicada antes da chamada ao LLM quando não houver contexto suficiente para responder.
+
+16. PROMPT AUMENTADO
+Quando houver candidatos relevantes:
+
+Recupere os documentos/chunks.
+Organize os resultados.
+Construa o contexto.
+Monte o prompt aumentado.
+Envie o contexto juntamente com a pergunta para o LLM através do OpenRouter.
+Gere a resposta utilizando somente as informações recuperadas quando a pergunta depender dos documentos.
+O sistema deve evitar respostas inventadas ou informações que não estejam sustentadas pelo contexto recuperado.
+
+Sempre que possível, deixe visível no modo didático a relação:
+
+Pergunta
+   +
+Contexto recuperado
+   ↓
+Prompt aumentado
+   ↓
+LLM
+   ↓
+Resposta
+17. OPENROUTER
+A integração com o LLM deverá utilizar o OpenRouter.
+
+As configurações devem ser obtidas através do .env.
+
+Não exponha a chave do OpenRouter no frontend.
+
+A chamada deverá ocorrer exclusivamente no backend.
+
+O modelo utilizado deverá ser configurável, preferencialmente através de variável de ambiente, evitando deixar o nome do modelo espalhado pelo código.
+
+18. SELEÇÃO DA BASE PARA INGESTÃO
+A aplicação deverá possuir uma opção para selecionar a base/documentos que serão utilizados no processo de ingestão.
+
+Na tela de ingestão deverá existir um controle que permita:
+
+selecionar a base disponível;
+iniciar a ingestão;
+acompanhar o processamento;
+visualizar o resultado de cada etapa.
+A arquitetura deve permitir futuramente adicionar outras bases/documentos sem necessidade de reescrever todo o pipeline.
+
+19. INTERFACE E EXPERIÊNCIA DO USUÁRIO
+A interface deverá seguir boas práticas de desenvolvimento frontend.
+
+Características desejadas:
+
+limpa;
+moderna;
+funcional;
+responsiva;
+intuitiva;
+visualmente organizada;
+com boa hierarquia de informações;
+sem excesso de elementos decorativos.
+O foco principal é clareza e compreensão do processo RAG.
+
+O usuário deve conseguir identificar facilmente:
+
+onde está;
+qual etapa está sendo executada;
+quais documentos foram processados;
+quais documentos foram recuperados;
+quais scores foram obtidos;
+qual contexto foi enviado ao LLM;
+qual foi a resposta final.
+20. IDENTIDADE VISUAL
+Crie uma identidade visual simples, elegante e discreta, utilizando um tema em vermelho vinho como cor principal, com alguns detalhes em amarelo. Aplique essa paleta somente à aparência visual da página, mantendo todos os demais requisitos e elementos do sistema inalterados.
+
+O nome da aplicação poderá utilizar:
+
+RAG + Bruno Gabriel Nunes
+O logotipo deve ser minimalista e adequado a uma aplicação técnica/didática.
+
+Não deixe a identidade visual competir com a visualização do processo RAG.
+
+21. TRATAMENTO DE ERROS
+Implemente tratamento adequado para situações como:
+
+Supabase indisponível;
+credenciais inválidas;
+OpenRouter indisponível;
+erro no OCR;
+PDF inválido;
+documento sem conteúdo;
+erro na geração do embedding;
+incompatibilidade da dimensão do vetor;
+erro no PGVECTOR;
+ausência de candidatos;
+timeout;
+erro na API;
+erro inesperado no backend.
+As mensagens apresentadas ao usuário devem ser claras, mas nunca devem expor:
+
+API keys;
+tokens;
+senhas;
+informações sensíveis;
+stack traces desnecessários em produção.
+22. OBSERVABILIDADE DIDÁTICA
+Como este é um projeto educacional, o sistema deve permitir compreender o que ocorreu em cada etapa.
+
+Sempre que possível, apresente informações como:
+
+Documento recebido
+↓
+Texto extraído
+↓
+Quantidade de tokens/chunks
+↓
+Embedding gerado
+↓
+Vetor armazenado
+↓
+Consulta realizada
+↓
+Top 5 resultados
+↓
+Scores
+↓
+Contexto utilizado
+↓
+Prompt aumentado
+↓
+Resposta do LLM
+Evite, entretanto, exibir informações sensíveis.
+
+23. BOAS PRÁTICAS DE CÓDIGO
+Utilize:
+
+nomes de arquivos e funções claros;
+separação de responsabilidades;
+configuração centralizada;
+variáveis de ambiente;
+tratamento de exceções;
+validação de entradas;
+tipagem quando apropriado;
+funções pequenas e objetivas;
+código reutilizável;
+documentação mínima necessária;
+comentários principalmente nas partes didáticas;
+dependências justificadas.
+Não implemente código desnecessariamente complexo.
+
+O projeto deve ser fácil de estudar, executar e modificar.
+
+24. CRITÉRIOS DE ACEITE
+Ao finalizar, valide obrigatoriamente:
+
+Ambiente
+ambiente_stacks.txt foi analisado.
+As tecnologias definidas no ambiente foram respeitadas.
+.env está sendo utilizado corretamente.
+Credenciais não são expostas.
+Supabase
+Teste de conectividade foi realizado antes da implementação do backend.
+Conexão foi validada.
+PGVECTOR está disponível.
+Tabela vetorial foi criada corretamente.
+Vetores foram inseridos.
+Documentos
+Existem 4 PDFs fictícios.
+Os PDFs representam notas fiscais.
+OCR foi executado.
+Campos relevantes foram extraídos.
+Dados foram estruturados localmente.
+Embeddings
+FastEmbed está sendo utilizado.
+Modelo está definido/configurado.
+Dimensão do embedding foi validada.
+Dimensão do PGVECTOR corresponde ao embedding.
+Retrieval
+Pergunta é transformada em embedding.
+Busca vetorial é executada.
+top_k = 5.
+Scores são retornados.
+Documentos recuperados são apresentados.
+LLM
+OpenRouter está configurado via .env.
+Chave não é exposta no frontend.
+Prompt aumentado é construído a partir do contexto recuperado.
+LLM somente é acionado quando houver contexto/candidatos adequados.
+Interface
+Existe página de ingestão.
+Existe página de consulta.
+O fluxo da ingestão é visualizado.
+O fluxo da consulta é visualizado.
+Existe seleção da base para ingestão.
+Existe interface semelhante a um chat.
+Retrieval e scores são exibidos.
+A resposta final é exibida.
+O nome/identidade RAG + Bruno Nunes está presente.
+Regra de ausência de dados
+Quando não houver candidatos, a resposta é exatamente:
+Sem dados disponíveis na base
+Nenhuma informação é inventada para preencher a ausência de dados.
+25. REGRA FINAL DE EXECUÇÃO
+Não pule etapas.
+
+Antes de implementar, analise o ambiente existente.
+
+Antes de construir o backend, valide a conectividade com o Supabase.
+
+Antes de concluir, execute testes do fluxo completo:
+
+PDF
+ ↓
+OCR
+ ↓
+Extração
+ ↓
+Estruturação
+ ↓
+Chunking
+ ↓
+FastEmbed
+ ↓
+PGVECTOR
+ ↓
+Pergunta
+ ↓
+Embedding
+ ↓
+Retrieval Top-K=5
+ ↓
+Prompt aumentado
+ ↓
+OpenRouter / LLM
+ ↓
+Resposta
+Ao finalizar, valide o sistema de ponta a ponta e corrija eventuais problemas encontrados.
+
+Não considere a tarefa concluída apenas porque os arquivos foram criados. O fluxo funcional completo deverá ser testado.
+

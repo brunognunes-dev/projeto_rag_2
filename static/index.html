@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG + Bruno Gabriel Nunes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Navbar -->
+    <header class="navbar">
+        <div class="brand">
+            <div class="brand-logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <div class="brand-title">RAG <span class="brand-sub">+ Bruno Gabriel Nunes</span></div>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" id="tab-ingestion-btn" onclick="switchTab('ingestion')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Ingestão
+            </button>
+            <button class="tab-btn" id="tab-query-btn" onclick="switchTab('query')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Consulta
+            </button>
+        </nav>
+
+        <div class="status-badge" id="backend-status">
+            <span class="status-dot"></span> Backend Conectado
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- TAB 1: INGESTÃO -->
+        <section id="tab-ingestion" class="tab-content active">
+            <div class="page-header">
+                <h2>Ingestão e Processamento de Documentos</h2>
+                <p>Demonstração didática da etapa de leitura por OCR, tokenização, vetorização e indexação vetorial no Supabase.</p>
+            </div>
+
+            <!-- Ingestion Workflow Stepper -->
+            <div class="pipeline-stepper" id="ingestion-stepper">
+                <div class="step-card" id="step-ing">
+                    <div class="step-icon">1</div>
+                    <div class="step-label">INGESTÃO</div>
+                    <div class="step-sub">OCR & Leitura PDF</div>
+                </div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="step-tok">
+                    <div class="step-icon">2</div>
+                    <div class="step-label">TOKENIZAÇÃO</div>
+                    <div class="step-sub">Divisão em Chunks</div>
+                </div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="step-emb">
+                    <div class="step-icon">3</div>
+                    <div class="step-label">EMBEDDING</div>
+                    <div class="step-sub">FastEmbed (384d)</div>
+                </div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="step-vec">
+                    <div class="step-icon">4</div>
+                    <div class="step-label">ÍNDICE VETORIAL</div>
+                    <div class="step-sub">PGVECTOR Supabase</div>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="card panel">
+                <div class="card-title">
+                    <svg width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Seleção de Base / Documentos Fictícios
+                </div>
+                <div class="doc-selection-grid" id="doc-checkboxes">
+                    <!-- Loaded dynamically -->
+                </div>
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="btn-start-ingestion" onclick="startIngestion()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Iniciar Ingestão e Processamento RAG
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ingestion Logs / Status -->
+            <div class="card panel" id="ingestion-logs-card" style="display:none;">
+                <div class="card-title">Progresso Detalhado da Ingestão</div>
+                <div id="ingestion-log-details" class="log-list"></div>
+            </div>
+
+            <!-- Local Tabular Data Grid -->
+            <div class="card panel" id="tabular-data-card" style="display:none;">
+                <div class="card-title">Estruturação Tabular Local (Dados Extraídos das Notas Fiscais)</div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Documento</th>
+                                <th>Nota Fiscal</th>
+                                <th>Data</th>
+                                <th>Emitente</th>
+                                <th>Destinatário</th>
+                                <th>Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabular-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CONSULTA -->
+        <section id="tab-query" class="tab-content">
+            <div class="page-header">
+                <h2>Consulta RAG & Observabilidade Didática</h2>
+                <p>Faça perguntas sobre as Notas Fiscais e acompanhe cada etapa do pipeline vetorial e geração por LLM.</p>
+            </div>
+
+            <!-- Query Pipeline Stepper -->
+            <div class="pipeline-stepper" id="query-stepper">
+                <div class="step-card" id="qstep-1"><div class="step-icon">1</div><div class="step-label">PERGUNTA</div></div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="qstep-2"><div class="step-icon">2</div><div class="step-label">TOKENIZAÇÃO</div></div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="qstep-3"><div class="step-icon">3</div><div class="step-label">EMBEDDING</div></div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="qstep-4"><div class="step-icon">4</div><div class="step-label">RETRIEVAL</div></div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="qstep-5"><div class="step-icon">5</div><div class="step-label">PROMPT AUMENTADO</div></div>
+                <div class="step-arrow">➔</div>
+                <div class="step-card" id="qstep-6"><div class="step-icon">6</div><div class="step-label">LLM</div></div>
+            </div>
+
+            <!-- Chat & Results Layout -->
+            <div class="chat-layout">
+                <!-- Left: Question Input & Answer -->
+                <div class="chat-main">
+                    <div class="card chat-box">
+                        <div class="card-title">Interface de Pergunta</div>
+                        <div class="input-group">
+                            <input type="text" id="query-input" placeholder="Ex: Qual foi o valor total da nota fiscal de informática de Bruno Gabriel?" onkeypress="handleKeyPress(event)">
+                            <button class="btn btn-primary" id="btn-send-query" onclick="sendQuery()">
+                                Enviar
+                            </button>
+                        </div>
+                        <div class="sample-questions">
+                            <span class="sample-label">Exemplos:</span>
+                            <button class="chip" onclick="setQuery('Qual é a nota fiscal da TechSupply Brasil e quais produtos foram comprados?')">TechSupply Products</button>
+                            <button class="chip" onclick="setQuery('Qual nota fiscal tem o servidor rack e qual o valor total?')">Servidor Rack</button>
+                            <button class="chip" onclick="setQuery('Quem é o presidente do Brasil em 1500?')">Teste Ausência Dados</button>
+                        </div>
+                    </div>
+
+                    <!-- Final Answer Card -->
+                    <div class="card answer-card" id="answer-card" style="display:none;">
+                        <div class="card-title gold-title">Resposta Final do LLM</div>
+                        <div class="answer-body" id="final-answer-text"></div>
+                    </div>
+                </div>
+
+                <!-- Right: Didactic Pipeline Breakdown -->
+                <div class="chat-sidebar">
+                    <div class="card panel">
+                        <div class="card-title">Documentos Recuperados (Top 5 Similarity)</div>
+                        <div id="retrieval-results-list" class="retrieval-list">
+                            <div class="empty-state">Nenhuma consulta realizada ainda.</div>
+                        </div>
+                    </div>
+
+                    <div class="card panel" id="prompt-card" style="display:none;">
+                        <div class="card-title">Prompt Aumentado (Pergunta + Contexto)</div>
+                        <pre class="code-preview" id="augmented-prompt-text"></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
