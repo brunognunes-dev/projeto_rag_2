@@ -16,7 +16,7 @@
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
             </div>
-            <div class="brand-title">RAG <span class="brand-sub">+ Bruno Gabriel Nunes</span></div>
+            <div class="brand-title">RAG <span class="brand-sub">- Bruno Gabriel Nunes</span></div>
         </div>
 
         <nav class="nav-tabs">
@@ -30,8 +30,13 @@
             </button>
         </nav>
 
-        <div class="status-badge" id="backend-status">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+            <a href="/pipeline.html" style="font-size:0.85rem; background:rgba(139,92,246,0.15); color:#C4B5FD; padding:0.4rem 0.8rem; border-radius:20px; display:flex; align-items:center; gap:0.4rem; border:1px solid rgba(139,92,246,0.3); text-decoration:none; transition:all 0.2s;" onmouseover="this.style.borderColor='#8B5CF6';this.style.background='rgba(139,92,246,0.25)'" onmouseout="this.style.borderColor='rgba(139,92,246,0.3)';this.style.background='rgba(139,92,246,0.15)'">
+                🔄 Visualizar Esteiras RAG
+            </a>
+            <div class="status-badge" id="backend-status">
             <span class="status-dot"></span> Backend Conectado
+            </div>
         </div>
     </header>
 
