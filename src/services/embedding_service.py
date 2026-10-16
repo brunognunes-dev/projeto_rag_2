@@ -1,6 +1,6 @@
 import numpy as np
 from fastembed import TextEmbedding
-from config import config
+from src.core.config import config
 
 class EmbeddingService:
     def __init__(self):

@@ -47,7 +47,7 @@ OPENROUTER_MODEL=openrouter/auto
 Para criar as 4 notas fiscais fictícias em formato PDF (`NF_001.pdf` a `NF_004.pdf`):
 
 ```bash
-python generate_invoices.py
+python scripts/generate_invoices.py
 ```
 
 ### 4. Teste de Conectividade do Supabase
@@ -55,7 +55,7 @@ python generate_invoices.py
 Antes de iniciar a aplicação web, valide a comunicação com o Supabase:
 
 ```bash
-python test_supabase.py
+python tests/test_supabase.py
 ```
 
 ### 5. Iniciar o Servidor Web Backend
@@ -77,7 +77,8 @@ Mostra visualmente a esteira de processamento:
 $$\text{INGESTÃO} \longrightarrow \text{TOKENIZAÇÃO} \longrightarrow \text{EMBEDDING} \longrightarrow \text{ÍNDICE VETORIAL}$$
 - Leitura de PDFs por OCR/Extrator.
 - Estruturação dos dados tabulares locais (Nota, Data, Emitente, Destinatário, Produtos, Valores).
-- Geração de Embeddings com FastEmbed e gravação no Supabase PGVECTOR.
+- Gravação persistente dos arquivos PDF no **Supabase Storage** (bucket `documents`).
+- Geração de Embeddings com FastEmbed e gravação no Supabase PGVECTOR (tabela `documents`).
 
 ### Aba Consulta (Chat RAG)
 Mostra didaticamente o fluxo de busca e resposta:
@@ -88,26 +89,41 @@ $$\text{PERGUNTA} \rightarrow \text{TOKENIZAÇÃO} \rightarrow \text{EMBEDDING} 
 
 ---
 
-## 📂 Estrutura de Arquivos
+## 📂 Estrutura de Arquivos Organizada (Boas Práticas)
 
 ```
 rag_java/
-├── .env                       # Variáveis de ambiente (ignorado no git)
-├── .gitignore                 # Proteção de dados sensíveis
-├── ambiente_stacks.txt        # Especificações de ambiente do projeto
-├── prompt.txt                 # Instruções e requisitos do projeto
-├── requirements.txt           # Dependências Python
-├── generate_invoices.py       # Script de geração dos 4 PDFs fictícios
-├── test_supabase.py           # Teste de conectividade com Supabase
-├── config.py                  # Configuração centralizada
-├── embedding_service.py       # Geração de Embeddings via FastEmbed
-├── database.py                # Integração com Supabase PGVECTOR
-├── ocr_ingestion.py           # OCR, extração e chunking de PDFs
-├── rag_service.py             # Pipeline RAG e integração OpenRouter
-├── app.py                     # API FastAPI e servidor estático
-├── static/                    # Frontend da aplicação
-│   ├── index.html             # Layout HTML5 (Dual Tab: Ingestão e Consulta)
-│   ├── styles.css             # Estilos CSS (Tema Vermelho Vinho e Dourado)
-│   └── app.js                 # Lógica de interface e chamadas API
-└── documents/                 # PDFs de Notas Fiscais fictícias
+├── .env                       # Credenciais e variáveis de ambiente (ignorado no git)
+├── .gitignore                 # Proteção de dados e pastas virtuais
+├── requirements.txt           # Dependências do projeto Python
+├── app.py                     # Entry point da aplicação FastAPI e rotas REST
+│
+├── src/                       # Código-fonte principal modularizado
+│   ├── core/                  # Módulos centrais do sistema
+│   │   ├── config.py          # Configurações e leitura do .env
+│   │   └── database.py        # Integração Supabase (DB PostgREST + Storage + Cache)
+│   └── services/              # Camada de serviços de negócio
+│       ├── embedding_service.py # FastEmbed (BAAI/bge-small-en-v1.5, 384d)
+│       ├── ocr_ingestion.py     # Pipeline OCR, chunking e envio ao Supabase
+│       └── rag_service.py       # Orquestração do RAG e consulta OpenRouter
+│
+├── documents/                 # PDFs gerados para processamento
+│
+├── scripts/                   # Scripts utilitários de suporte
+│   └── generate_invoices.py   # Gerador de notas fiscais fictícias em PDF
+│
+├── tests/                     # Testes automatizados e de conectividade
+│   ├── test_supabase.py       # Validação da conexão com Supabase API
+│   └── test_full_pipeline.py  # Teste E2E do pipeline completo RAG
+│
+├── docs/                      # Documentações e relatórios de projeto
+│   ├── prompt.txt             # Especificação e prompts do sistema
+│   ├── ambiente_stacks.txt    # Detalhes do ambiente e stacks
+│   └── relatorio_execucao_validacao.md # Relatório de validação
+│
+└── static/                    # Frontend da aplicação web
+    ├── index.html             # Interface principal (Dual Tab: Ingestão e Consulta)
+    ├── pipeline.html          # Visualização didática interativa de esteiras
+    ├── styles.css             # Design System (Vinho escuro e Dourado)
+    └── app.js                 # Lógica de interação client-side
 ```

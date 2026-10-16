@@ -1,7 +1,7 @@
 import httpx
-from config import config
-from embedding_service import embedding_service
-from database import db_manager
+from src.core.config import config
+from src.services.embedding_service import embedding_service
+from src.core.database import db_manager
 
 NO_DATA_RESPONSE = "Sem dados disponíveis na base"
 

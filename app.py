@@ -3,9 +3,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from ocr_ingestion import ingestion_service
-from rag_service import rag_service
-from config import config
+from src.services.ocr_ingestion import ingestion_service
+from src.services.rag_service import rag_service
+from src.core.config import config
 
 app = FastAPI(title="RAG + Bruno Gabriel Nunes", version="1.0.0")
 

@@ -2,8 +2,8 @@ import os
 import re
 from pypdf import PdfReader
 import pandas as pd
-from embedding_service import embedding_service
-from database import db_manager
+from src.services.embedding_service import embedding_service
+from src.core.database import db_manager
 
 class OCRAndIngestionService:
     def __init__(self, doc_dir="documents"):
@@ -83,6 +83,13 @@ class OCRAndIngestionService:
             fpath = os.path.join(self.doc_dir, fname)
             if not os.path.exists(fpath):
                 continue
+
+            # Upload PDF permanently to Supabase Storage
+            try:
+                with open(fpath, "rb") as f_pdf:
+                    db_manager.upload_file_to_storage(fname, f_pdf.read(), content_type="application/pdf")
+            except Exception as e:
+                print(f"[OCR] Supabase storage upload notice for {fname}: {e}")
             
             raw_text = self.extract_text_from_pdf(fpath)
             fields = self.parse_structured_fields(fname, raw_text)
