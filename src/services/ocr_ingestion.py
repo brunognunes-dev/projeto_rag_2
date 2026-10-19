@@ -1,18 +1,36 @@
 import os
 import re
+import shutil
 from pypdf import PdfReader
 import pandas as pd
 from src.services.embedding_service import embedding_service
 from src.core.database import db_manager
 
 class OCRAndIngestionService:
-    def __init__(self, doc_dir="documents"):
+    def __init__(self, doc_dir="documents/raw", archive_dir="documents/gold"):
         self.doc_dir = doc_dir
+        self.archive_dir = archive_dir
+        os.makedirs(self.doc_dir, exist_ok=True)
+        os.makedirs(self.archive_dir, exist_ok=True)
 
     def list_available_documents(self) -> list[str]:
         if not os.path.exists(self.doc_dir):
             return []
-        return [f for f in os.listdir(self.doc_dir) if f.endswith(".pdf")]
+        return sorted(f for f in os.listdir(self.doc_dir) if f.lower().endswith(".pdf"))
+
+    def _move_processed_file(self, file_path: str) -> bool:
+        try:
+            if not os.path.exists(file_path):
+                return False
+            os.makedirs(self.archive_dir, exist_ok=True)
+            destination = os.path.join(self.archive_dir, os.path.basename(file_path))
+            if os.path.exists(destination):
+                os.remove(destination)
+            shutil.move(file_path, destination)
+            return True
+        except Exception as e:
+            print(f"[OCR] Falha ao mover arquivo processado para {self.archive_dir}: {e}")
+            return False
 
     def extract_text_from_pdf(self, pdf_path: str) -> str:
         """Reads PDF and extracts raw textual content (OCR fallback simulated if required)."""
@@ -161,13 +179,16 @@ class OCRAndIngestionService:
         })
 
         for i, c in enumerate(processed_chunks):
-            db_manager.save_chunk(
+            saved = db_manager.save_chunk(
                 doc_name=c["doc_name"],
                 chunk_index=c["chunk_index"],
                 content=c["content"],
                 metadata=c["metadata"],
                 embedding=embeddings[i]
             )
+            if saved:
+                original_path = os.path.join(self.doc_dir, c["doc_name"])
+                self._move_processed_file(original_path)
 
         steps_log[3]["status"] = "Concluído"
         steps_log[3]["detail"] = f"{total_embeddings} registros armazenados com sucesso."
