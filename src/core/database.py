@@ -55,7 +55,7 @@ class DatabaseManager:
             except Exception as e:
                 print(f"[Database] Notice ao limpar 'documents': {e}")
 
-    def save_chunk(self, doc_name: str, chunk_index: int, content: str, metadata: dict, embedding: list[float]):
+    def save_chunk(self, doc_name: str, chunk_index: int, content: str, metadata: dict, embedding: list[float]) -> bool:
         record = {
             "document_name": doc_name,
             "chunk_index": chunk_index,
@@ -67,19 +67,23 @@ class DatabaseManager:
         self.vector_store.append(record)
 
         # Permanent persistence in Supabase table 'documents'
-        if self.client:
-            try:
-                self.client.table("documents").insert({
-                    "content": content,
-                    "metadata": {
-                        "document_name": doc_name,
-                        "chunk_index": chunk_index,
-                        "fields": metadata,
-                        "embedding": embedding
-                    }
-                }).execute()
-            except Exception as e:
-                print(f"[Database] Supabase insert notice: {str(e)[:150]}")
+        if not self.client:
+            return False
+
+        try:
+            self.client.table("documents").insert({
+                "content": content,
+                "metadata": {
+                    "document_name": doc_name,
+                    "chunk_index": chunk_index,
+                    "fields": metadata,
+                    "embedding": embedding
+                }
+            }).execute()
+            return True
+        except Exception as e:
+            print(f"[Database] Supabase insert notice: {str(e)[:150]}")
+            return False
 
     def upload_file_to_storage(self, file_name: str, file_bytes: bytes, content_type: str = "application/pdf") -> str:
         """Uploads document file permanently to Supabase Storage bucket 'documents'."""
